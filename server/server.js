@@ -5,7 +5,7 @@ const { mongoose } = require('./db/mongoose');
 
 const { Recommendation } = require('./models/recommendation');
 
-const port = process.env.NODE_SERVER_PORT || 4000;
+const port = process.env.PORT || 3000;
 
 const app = express();
 
