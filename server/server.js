@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const { mongoose } = require('./db/mongoose');
 
 const { Recommendation } = require('./models/recommendation');
+const { User } = require('./models/user');
+const { authenticate } = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT;
@@ -88,7 +90,24 @@ app.patch('/recs/:id', (req, res) => {
     });
 });
 
-if (process.env.NODE_ENV !== 'testing') {
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
+});
+
+app.post('/users', (req, res) => {
+    const { email, password } = req.body;
+    var user = new User({email, password});
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).status(200).send(user);
+    }).catch((err)=> {
+        res.status(400).send(err);
+    });
+});
+
+if (process.env.NODE_ENV !== 'test') {
     app.listen(port, () => {
         console.log(`Server started at http://localhost:${port}`);
     });
