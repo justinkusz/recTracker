@@ -1,3 +1,5 @@
+require('./config/config');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -5,9 +7,8 @@ const { mongoose } = require('./db/mongoose');
 
 const { Recommendation } = require('./models/recommendation');
 
-const port = process.env.PORT || 3000;
-
 const app = express();
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
