@@ -110,4 +110,66 @@ describe('Server', () => {
                 }).end(done);
         });
     });
+
+    describe('UPDATE /recs/:id', () => {
+        it('should return a 400 if the id is invalid', (done) => {
+            request(app).patch('/recs/someinvalidid')
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 404 if the id is not found', (done) => {
+            var rec = recs[0];
+            rec._id = new mongoose.Types.ObjectId().toHexString();
+            request(app).patch(`/recs/${rec._id}`)
+                .send(rec)
+                .expect(404)
+                .end(done);
+        });
+
+        it('should update the rec', (done) => {
+            var rec = recs[0];
+            rec.consumed = true;
+            request(app).patch(`/recs/${rec._id}`)
+                .send(rec)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.rec.consumed).toBeTruthy();
+                }).end(done);
+        });
+    });
+
+    describe('DELETE /recs/:id', () => {
+        it('should return a 400 if id is invald', (done) => {
+            request(app).delete('/recs/someinvalidid')
+                .expect(400)
+                .end(done);
+        });
+
+        it('should return a 404 if id is not found', (done) => {
+            const id = new mongoose.Types.ObjectId().toHexString();
+            request(app).delete(`/recs/${id}`)
+                .expect(404)
+                .end(done);
+        });
+
+        it('should delete and return a specific rec', (done) => {
+            const id = recs[0]._id;
+            request(app).delete(`/recs/${id}`)
+                .expect(200)
+                .expect((res) => {
+                    expect(res.body.rec).toMatchObject(recs[0]);
+                }).end((err, res) => {
+                    if (err) {
+                        return done(err);
+                    }
+                    Recommendation.findById(id).then((rec) => {
+                        expect(rec).toBeFalsy();
+                        done();
+                    }).catch((err) => {
+                        done(err);
+                    });
+                });
+        });
+    });
 });
