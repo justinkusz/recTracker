@@ -24,6 +24,10 @@ const Recommendation = mongoose.model('Recommendation', {
         type: String,
         trim: true,
         required: true
+    },
+    consumed: {
+        type: Boolean,
+        default: false
     }
 });
 
