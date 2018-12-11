@@ -80,7 +80,7 @@ app.patch('/recs/:id', (req, res) => {
 
     Recommendation.findByIdAndUpdate(id, {
         $set: {title, recommender, url, type, consumed}
-    },{new: true}).then((rec) => {
+    },{new: true, useFindAndModify: false}).then((rec) => {
         if (!rec) {
             return res.status(404).send();
         }
