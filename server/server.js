@@ -14,10 +14,16 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-app.post('/recs', (req, res) => {
+app.post('/recs', authenticate, (req, res) => {
     const { type, title, url, recommender } = req.body;
 
-    const newRec = new Recommendation({ type, title, url, recommender });
+    const newRec = new Recommendation({
+        type: type,
+        title: title,
+        url: url,
+        recommender: recommender,
+        _owner: req.user._id
+    });
 
     newRec.save().then((rec) => {
         res.status(200).send(rec);
@@ -26,8 +32,8 @@ app.post('/recs', (req, res) => {
     });
 });
 
-app.get('/recs', (req, res) => {
-    Recommendation.find().then((recs) => {
+app.get('/recs', authenticate, (req, res) => {
+    Recommendation.find({_owner: req.user._id}).then((recs) => {
         res.status(200).send({recs: recs});
     }, (error) => {
         res.status(400).send(error);

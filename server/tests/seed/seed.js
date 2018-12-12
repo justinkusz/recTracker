@@ -3,7 +3,7 @@ const { Recommendation } = require('../../models/recommendation');
 const { User } = require('../../models/user');
 const jwt = require('jsonwebtoken');
 
-const objIds = [new ObjectId().toHexString(), new ObjectId().toHexString()];
+const userIds = [new ObjectId().toHexString(), new ObjectId().toHexString()];
 
 const recs = [
     {
@@ -11,29 +11,31 @@ const recs = [
         type: 'book',
         title: 'Lord of the Rings',
         url: 'https://www.tolkien.co.uk/',
-        recommender: 'Sue Bob'
+        recommender: 'Sue Bob',
+        _owner: userIds[0]
     },
     {
         _id: new ObjectId().toHexString(),
         type: 'movie',
         title: '2001: A Space Odyssey',
         url: 'https://www.imdb.com/title/tt0062622/',
-        recommender: 'Joe Bob'
+        recommender: 'Joe Bob',
+        _owner: userIds[1]
     }
 ];
 
 const users = [
     {
-        _id: objIds[0],
+        _id: userIds[0],
         email: 'test@test.com',
         password: 'somepassword',
         tokens: [{
             access: 'auth',
-            token: jwt.sign({_id: objIds[0], access: 'auth'}, 'abc123').toString()
+            token: jwt.sign({_id: userIds[0], access: 'auth'}, 'abc123').toString()
         }]
     },
     {
-        _id: objIds[1],
+        _id: userIds[1],
         email: 'another@test.com',
         password: 'otherpassword'
     }

@@ -7,24 +7,29 @@ const { User } = require('../models/user');
 const app = require('../server').app;
 const { recs, users, populateRecs, populateUsers } = require('./seed/seed');
 
+beforeEach((done) => {
+    populateRecs(done);
+});
+
+beforeEach((done) => {
+    populateUsers(done);
+});
+
 describe('Server', () => {
     describe('# Recommendations', () => {
         
-        beforeEach((done) => {
-            populateRecs(done);
-        });
-
         describe('POST /recs', () => {
             it('should add and return a new recommendation', (done) => {
                 const rec = {
                     type: 'book',
                     title: 'Rendezvous with Rama',
                     url: 'https://www.amazon.com/Rendezvous-Rama-Arthur-C-Clarke/dp/0553287893',
-                    recommender: 'Sue Bob'
+                    recommender: 'Sue Bob',
+                    _owner: users[0]._id
                 };
                 request(app).post('/recs')
+                    .set('x-auth', users[0].tokens[0].token)
                     .send(rec)
-                    .set('Accept', 'application/json')
                     .expect(200)
                     .expect((res) => {
                         expect(res.body).toMatchObject(rec);
@@ -32,19 +37,42 @@ describe('Server', () => {
                         if (err) {
                             return done(err);
                         }
-                        Recommendation.find({title: rec.title}).then((recs) => {
-                            expect(recs.length).toBe(1);
-                            expect(recs[0]).toMatchObject(rec);
+                        Recommendation.find({_owner: users[0]._id}).then((recs) => {
+                            expect(recs.length).toBe(2);
                             done();
                         }).catch((err) => done(err));
+                    });
+            });
+
+            it('should return a 401 if user is not authenticated', (done) => {
+                const rec = {
+                    type: 'book',
+                    title: 'Rendezvous with Rama',
+                    url: 'https://www.amazon.com/Rendezvous-Rama-Arthur-C-Clarke/dp/0553287893',
+                    recommender: 'Sue Bob',
+                    _owner: users[1]._id
+                };
+                request(app).post('/recs')
+                    .send(rec)
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toMatchObject({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        Recommendation.find({_owner: users[1]._id}).then((recs) => {
+                            expect(recs.length).toBe(1);
+                            done();
+                        }).catch(err => done(err));
                     });
             });
     
             it('should not create a new rec with invalid data', (done) => {
                 const rec = {};
                 request(app).post('/recs')
+                    .set('x-auth', users[0].tokens[0].token)
                     .send(rec)
-                    .set('Accept', 'application/json')
                     .expect(400)
                     .end((err, res) => {
                         if (err) {
@@ -61,11 +89,19 @@ describe('Server', () => {
         describe('GET /recs', () => {
             it('should return a list of all recommendations', (done) => {
                 request(app).get('/recs')
-                    .set('Accept', 'application/json')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body.recs.length).toBe(2);
-                        expect(res.body.recs).toMatchObject(recs);
+                        expect(res.body.recs.length).toBe(1);
+                        expect(res.body.recs[0]).toMatchObject(recs[0]);
+                    }).end(done);
+            });
+
+            it('should return a 401 if user is not authenticated', (done) => {
+                request(app).get('/recs')
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toMatchObject({});
                     }).end(done);
             });
         });
@@ -158,10 +194,6 @@ describe('Server', () => {
     });
     
     describe('# Users', () => {
-        
-        beforeEach((done) => {
-            populateUsers(done);
-        });
 
         describe('GET /users/me', () => {
             it('should return a user if authenticated', (done) => {

@@ -28,6 +28,10 @@ const Recommendation = mongoose.model('Recommendation', {
     consumed: {
         type: Boolean,
         default: false
+    },
+    _owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     }
 });
 
