@@ -151,9 +151,7 @@ describe('Server', () => {
                         Recommendation.findById(id).then((rec) => {
                             expect(rec).toBeFalsy();
                             done();
-                        }).catch((err) => {
-                            done(err);
-                        });
+                        }).catch((err) => done(err));
                     });
             });
         });
@@ -197,7 +195,7 @@ describe('Server', () => {
                         expect(res.headers['x-auth']).toBeTruthy();
                         expect(res.body._id).toBeTruthy();
                         expect(res.body.email).toBeTruthy();
-                    }).end((err) => {
+                    }).end((err, res) => {
                         if (err) {
                             return done(err);
                         }
@@ -206,7 +204,7 @@ describe('Server', () => {
                             expect(user).toBeTruthy();
                             expect(user.password).not.toBe(password);
                             done();
-                        });
+                        }).catch((err) => done(err));
                     });
             });
 
@@ -218,7 +216,6 @@ describe('Server', () => {
                     .send({email, password})
                     .expect(400)
                     .end(done);
-
             });
 
             it('should not create user if email in use', (done) => {
@@ -231,6 +228,65 @@ describe('Server', () => {
                     .end(done);
             });
         });
+
+        describe('POST /users/login', () => {
+            it('should authenticate and return an existing user', (done) => {
+                const {email,password} = users[1];
+                request(app).post('/users/login')
+                    .send({email, password})
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.headers['x-auth']).toBeTruthy();
+                        expect(res.body.email).toBe(email);
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        User.findById(users[1]._id).then((user) => {
+                            expect(user).toBeTruthy();
+                            expect(user.tokens[0]).toMatchObject({
+                                access: 'auth',
+                                token: res.headers['x-auth']
+                            });
+                            expect(user.password).not.toBe(password);
+                            done();
+                        }).catch((err) => done(err));
+                    });
+            });
+
+            it('should return a 401 if user does not exist', (done) => {
+                const email = 'notauser@email.com';
+                const password = 'somepassword';
+
+                request(app).post('/users/login')
+                    .send({email, password})
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.headers['x-auth']).not.toBeTruthy();
+                        expect(res.body).toMatchObject({});
+                    }).end(done);
+            });
+
+            it('should return a 401 if password is not correct', (done) => {
+                const email = users[1].email;
+                const password = users[1].password + '0';
+
+                request(app).post('/users/login')
+                    .send({email, password})
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.headers['x-auth']).not.toBeTruthy();
+                        expect(res.body).toMatchObject({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        User.findById(users[1]._id).then((user) => {
+                            expect(user.tokens.length).toBe(0);
+                            done();
+                        }).catch((err) => done(err));
+                    });
+            });
+        });
     });
-    
 });
