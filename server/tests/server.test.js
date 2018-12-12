@@ -183,6 +183,36 @@ describe('Server', () => {
             });
         });
 
+        describe('DELETE /users/me/token', () => {
+            it('should remove user auth token', (done) => {
+                request(app).delete('/users/me/token')
+                    .set('x-auth', users[0].tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body).toMatchObject({});
+                    })
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        User.findById(users[0]._id).then((user) => {
+                            expect(user.tokens.length).toBe(0);
+                            done();
+                        }).catch(err => done(err));
+                    });
+            });
+
+            it('should return a 401 if user is not authenticated', (done) => {
+                request(app).delete('/users/me/token')
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toMatchObject({});
+                    })
+                    .end(done);
+            });
+        });
+
         describe('POST /users', () => {
             it('should create a user', (done) => {
                 const email = 'testuser@email.com';

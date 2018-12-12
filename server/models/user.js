@@ -49,6 +49,16 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.updateOne({
+        $pull: {
+            tokens: {token}
+        }
+    });
+};
+
 UserSchema.statics.findByEmailAndPassword = function (email, password) {
     var User = this;
 
