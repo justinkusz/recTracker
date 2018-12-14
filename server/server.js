@@ -40,41 +40,40 @@ app.get('/recs', authenticate, (req, res) => {
     });
 });
 
-app.get('/recs/:id', (req, res) => {
+app.get('/recs/:id', authenticate,(req, res) => {
     const id = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send('Invalid id');
-    } else {
-        Recommendation.findById(id).then((rec) => {
-            if (!rec) {
-                return res.status(404).send();
-            }
-            res.status(200).send({rec: rec});
-        }).catch((error) => {
-            res.status(400).send(error)
-        });
     }
+    Recommendation.findOne({_id: id, _owner: req.user._id}).then((rec) => {
+        if (!rec) {
+            return res.status(404).send();
+        }
+        res.status(200).send({rec: rec});
+    }).catch((error) => {
+        res.status(400).send(error)
+    });
 });
 
-app.delete('/recs/:id', (req, res) => {
+app.delete('/recs/:id', authenticate, (req, res) => {
     const id = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).send('Invalid id');
-    } else {
-        Recommendation.findOneAndDelete({_id: id}).then((rec) => {
-            if (!rec) {
-                return res.status(404).send();
-            }
-            res.status(200).send({rec: rec});
-        }).catch((error) => {
-            res.status(400).send(error);
-        });
     }
+
+    Recommendation.findOneAndDelete({_id: id, _owner: req.user._id}).then((rec) => {
+        if (!rec) {
+            return res.status(404).send();
+        }
+        res.status(200).send({rec: rec});
+    }).catch((error) => {
+        res.status(400).send(error);
+    });
 });
 
-app.patch('/recs/:id', (req, res) => {
+app.patch('/recs/:id', authenticate, (req, res) => {
     const id = req.params.id;
     var {title, recommender, url, consumed, type} = req.body;
 
@@ -84,7 +83,7 @@ app.patch('/recs/:id', (req, res) => {
 
     consumed = typeof consumed === 'boolean' && consumed;
 
-    Recommendation.findByIdAndUpdate(id, {
+    Recommendation.findOneAndUpdate({_id: id, _owner: req.user._id}, {
         $set: {title, recommender, url, type, consumed}
     },{new: true, useFindAndModify: false}).then((rec) => {
         if (!rec) {

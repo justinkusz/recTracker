@@ -56,7 +56,7 @@ describe('Server', () => {
                     .send(rec)
                     .expect(401)
                     .expect((res) => {
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     }).end((err, res) => {
                         if (err) {
                             return done(err);
@@ -101,7 +101,7 @@ describe('Server', () => {
                 request(app).get('/recs')
                     .expect(401)
                     .expect((res) => {
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     }).end(done);
             });
         });
@@ -109,32 +109,59 @@ describe('Server', () => {
         describe('GET /recs/:id', () => {
             it('should return a 400 when id is invalid', (done) => {
                 request(app).get('/recs/someinvalidid')
-                    .set('Accept', 'application/json')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(400)
                     .end(done);
+            });
+
+            it('should return a 401 if not authenticated', (done) => {
+                request(app).get(`/recs/${recs[0]._id}`)
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end(done);
+            });
+
+            it('should return a 404 if user is not owner', (done) => {
+                request(app).get(`/recs/${recs[1]._id}`)
+                    .set('x-auth', users[0].tokens[0].token)
+                    .expect(404)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end(done);
             });
     
             it('should return 404 when id is not found', (done) => {
                 const id = new mongoose.Types.ObjectId().toHexString();
                 request(app).get(`/recs/${id}`)
-                    .set('Accept', 'application/json')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(404)
                     .end(done);
             });
     
-            it('should return a specific rec', (done) => {
+            it('should return a specific rec if user is owner', (done) => {
                 request(app).get(`/recs/${recs[0]._id}`)
-                    .set('Accept', 'application/json')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
                         expect(res.body.rec).toMatchObject(recs[0]);
-                    }).end(done);
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        Recommendation.findById(recs[0]._id).then((rec) => {
+                            expect(rec._owner.toHexString()).toBe(users[0]._id);
+                            done();
+                        }).catch(err => done(err));
+                    });
             });
         });
     
         describe('UPDATE /recs/:id', () => {
             it('should return a 400 if the id is invalid', (done) => {
                 request(app).patch('/recs/someinvalidid')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(400)
                     .end(done);
             });
@@ -143,15 +170,61 @@ describe('Server', () => {
                 var rec = recs[0];
                 rec._id = new mongoose.Types.ObjectId().toHexString();
                 request(app).patch(`/recs/${rec._id}`)
+                    .set('x-auth', users[0].tokens[0].token)
                     .send(rec)
                     .expect(404)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    })
                     .end(done);
             });
-    
-            it('should update the rec', (done) => {
+
+            it('should return a 401 if not authenticated', (done) => {
                 var rec = recs[0];
                 rec.consumed = true;
                 request(app).patch(`/recs/${rec._id}`)
+                    .send(rec)
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        Recommendation.findById(rec._id).then((rec) => {
+                            expect(rec.consumed).toBeFalsy();
+                            done();
+                        }).catch(err => done(err));
+                    });
+            });
+
+            it('should return a 404 if user is not owner', (done) => {
+                var rec = recs[1];
+                rec.consumed = true;
+                request(app).patch(`/recs/${rec._id}`)
+                    .set('x-auth', users[0].tokens[0].token)
+                    .send(rec)
+                    .expect(404)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        Recommendation.findById(rec._id).then((rec) => {
+                            expect(rec.consumed).toBeFalsy();
+                            done();
+                        }).catch(err => done(err));
+                    });
+            });
+    
+            it('should update the rec if user is owner', (done) => {
+                var rec = recs[0];
+                rec.consumed = true;
+                request(app).patch(`/recs/${rec._id}`)
+                    .set('x-auth', users[0].tokens[0].token)
                     .send(rec)
                     .expect(200)
                     .expect((res) => {
@@ -163,6 +236,7 @@ describe('Server', () => {
         describe('DELETE /recs/:id', () => {
             it('should return a 400 if id is invald', (done) => {
                 request(app).delete('/recs/someinvalidid')
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(400)
                     .end(done);
             });
@@ -170,13 +244,50 @@ describe('Server', () => {
             it('should return a 404 if id is not found', (done) => {
                 const id = new mongoose.Types.ObjectId().toHexString();
                 request(app).delete(`/recs/${id}`)
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(404)
                     .end(done);
             });
-    
-            it('should delete and return a specific rec', (done) => {
+
+            it('should return a 401 if not authenticated', (done) => {
+                request(app).delete(`/recs/${recs[0]._id}`)
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        Recommendation.findById(recs[0]._id).then((rec) => {
+                            expect(rec).toBeTruthy();
+                            done();
+                        }).catch(err => done(err));
+                    });
+            });
+
+            it('should return a 404 if user is not owner', (done) => {
+                request(app).delete(`/recs/${recs[1]._id}`)
+                    .set('x-auth', users[0].tokens[0].token)
+                    .expect(404)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        Recommendation.findById(recs[1]._id).then((rec) => {
+                            expect(rec).toBeTruthy();
+                            done();
+                        }).catch(err => done(err));
+                    });
+            });
+
+            it('should delete and return a specific rec if user is owner', (done) => {
                 const id = recs[0]._id;
                 request(app).delete(`/recs/${id}`)
+                    .set('x-auth', users[0].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
                         expect(res.body.rec).toMatchObject(recs[0]);
@@ -221,7 +332,7 @@ describe('Server', () => {
                     .set('x-auth', users[0].tokens[0].token)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     })
                     .end((err, res) => {
                         if (err) {
@@ -239,7 +350,7 @@ describe('Server', () => {
                 request(app).delete('/users/me/token')
                     .expect(401)
                     .expect((res) => {
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     })
                     .end(done);
             });
@@ -325,7 +436,7 @@ describe('Server', () => {
                     .expect(401)
                     .expect((res) => {
                         expect(res.headers['x-auth']).not.toBeTruthy();
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     }).end(done);
             });
 
@@ -338,7 +449,7 @@ describe('Server', () => {
                     .expect(401)
                     .expect((res) => {
                         expect(res.headers['x-auth']).not.toBeTruthy();
-                        expect(res.body).toMatchObject({});
+                        expect(res.body).toEqual({});
                     }).end((err, res) => {
                         if (err) {
                             return done(err);
