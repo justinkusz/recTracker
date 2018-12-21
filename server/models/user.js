@@ -115,6 +115,16 @@ UserSchema.pre('save', function (next) {
     }
 });
 
+const handleUplicateError = (err, res, next) => {
+    if (err.name === 'MongoError' && err.code === 11000) {
+        next(new Error('User already exists'));
+    } else {
+        next();
+    }
+}
+
+UserSchema.post('save', handleUplicateError);
+
 const User = mongoose.model('User', UserSchema);
 
 module.exports = { User };
