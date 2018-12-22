@@ -64,14 +64,14 @@ UserSchema.statics.findByEmailAndPassword = function (email, password) {
 
     return User.findOne({email}).then((user) => {
         if (!user) {
-            return Promise.reject();
+            return Promise.reject('Incorrect username/password');
         }
         const hash = user.password;
         return bcrypt.compare(password, hash).then((success) => {
             if (success) {
                 return user;
             } else {
-                return Promise.reject();
+                return Promise.reject('Incorrect username/password');
             }
         });
     });

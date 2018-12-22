@@ -103,7 +103,7 @@ app.delete('/users/me/token', authenticate, (req, res) => {
     req.user.removeToken(req.token).then(() => {
         res.status(200).send();
     }).catch((err) => {
-        res.status(400).send(err);
+        res.status(400).send(err.message);
     });
 });
 
@@ -111,12 +111,11 @@ app.post('/users/login', (req, res) => {
     const {email, password} = req.body;
 
     User.findByEmailAndPassword(email, password).then((user) => {
-        // res.status(200).send(user);
         return user.generateAuthToken().then((token) => {
             res.header('x-auth', token).status(200).send(user);
         });
     }).catch((err) => {
-        res.status(401).send();
+        res.status(401).send(err);
     });
 });
 
