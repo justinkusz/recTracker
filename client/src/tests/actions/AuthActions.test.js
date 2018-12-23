@@ -52,7 +52,7 @@ describe('attemptLogin', () => {
 
         const expectedActions = [
             {type: types.LOGIN_ATTEMPTED},
-            {type: types.LOGIN_SUCCESS, payload: {user, authToken}}
+            {type: types.AUTHENTICATED, payload: user}
         ];
 
         const store = mockStore({});
@@ -185,11 +185,10 @@ describe('attemptSignup', () => {
 
         const expectedActions = [
             { type: types.SIGNUP_ATTEMPTED },
-            { type: types.SIGNUP_SUCCESS, payload: {user, authToken} }
+            { type: types.AUTHENTICATED, payload: user }
         ];
 
         const store = mockStore({});
-        
 
         return store.dispatch(actions.attemptSignup(creds)).then(() => {
             expect(store.getActions()).toEqual(expectedActions);

@@ -1,10 +1,10 @@
 import * as types from '../actions/types';
 
 const INITIAL_STATE = {
-    authToken: null,
-    user: null,
+    authenticated: false,
     error: null,
-    loading: false
+    loading: false,
+    user: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -13,24 +13,17 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, loading: true };
         case types.SIGNUP_FAILED:
             return { ...state, loading: false, error: action.payload };
-        case types.SIGNUP_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                authToken: action.payload.authToken,
-                user: action.payload.user
-            };
         case types.LOGIN_ATTEMPTED:
             return { ...state, loading: true };
         case types.LOGIN_FAILED:
             return { ...state, loading: false, error: action.payload };
-        case types.LOGIN_SUCCESS:
+        case types.AUTHENTICATED:
             return {
                 ...state,
                 loading: false,
-                authToken: action.payload.authToken,
-                user: action.payload.user,
-                error: null
+                authenticated: true,
+                error: null,
+                user: action.payload
             };
         case types.LOGOUT_ATTEMPTED:
             return { ...state, loading: true };

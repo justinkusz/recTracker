@@ -1,50 +1,6 @@
 import * as types from './types';
 import axios from 'axios';
 
-const signupAttempted = (dispatch) => {
-    dispatch({ type: types.SIGNUP_ATTEMPTED });
-}
-
-const signupSuccess = (dispatch, authToken, user) => {
-    dispatch({
-        type: types.SIGNUP_SUCCESS,
-        payload: { user, authToken }
-    });
-};
-
-const signupFailed = (dispatch, err) => {
-    dispatch({
-        type: types.SIGNUP_FAILED,
-        payload: err
-    });
-}
-
-const logoutAttempted = (dispatch) => {
-    dispatch({type: types.LOGOUT_ATTEMPTED});
-};
-
-const logoutSuccess = (dispatch) => {
-    dispatch({type: types.LOGOUT_SUCCESS});
-};
-
-const logoutFailed = (dispatch, err) => {
-    dispatch({type: types.LOGOUT_FAILED, payload: err});
-};
-
-const loginAttempted = (dispatch) => {
-    dispatch({type: types.LOGIN_ATTEMPTED});
-}
-
-const loginFailed = (dispatch, err) => {
-    dispatch({ type: types.LOGIN_FAILED, payload: err });
-};
-
-const loginSuccess = (dispatch, authToken, user) => {
-    dispatch({
-        type: types.LOGIN_SUCCESS,
-        payload: { user, authToken }
-    });
-}
 
 export const openedAuthPage = () => {
     return { type: types.OPENED_AUTH_PAGE };
@@ -52,42 +8,49 @@ export const openedAuthPage = () => {
 
 export const attemptLogin = ({email, password}) => {
     return (dispatch) => {
-        loginAttempted(dispatch);
+        dispatch({type: types.LOGIN_ATTEMPTED});
 
         return axios.post('/users/login', {email, password}).then((res) => {
             const authToken = res.headers['x-auth'];
             const user = res.data;
 
-            loginSuccess(dispatch, authToken, user);
+            localStorage.setItem('authToken', authToken);
+
+            dispatch({type: types.AUTHENTICATED, payload: user})
         }, (err) => {
-            loginFailed(dispatch, err.response.data);
+            dispatch({ type: types.LOGIN_FAILED, payload: err.response.data });
         });
     };
 };
 
 export const attemptLogout = (user, token) => {
     return (dispatch) => {
-        logoutAttempted(dispatch);
+        dispatch({type: types.LOGOUT_ATTEMPTED});
 
-        return axios.delete('/users/me/token', {data: {user, token}}).then((res) => {
-            logoutSuccess(dispatch);
+        return axios.delete('/users/me/token', {
+            data: {user, token},
+            headers: {'x-auth': token}
+            }).then((res) => {
+            localStorage.removeItem('authToken');
+            dispatch({type: types.LOGOUT_SUCCESS});
         }, (err) => {
-            logoutFailed(dispatch, err.response.data);
+            dispatch({type: types.LOGOUT_FAILED, payload: err.response.data});
         });
     };
 };
 
 export const attemptSignup = ({email, password}) => {
     return (dispatch) => {
-        signupAttempted(dispatch);
+        dispatch({ type: types.SIGNUP_ATTEMPTED });
 
         return axios.post('/users', {email, password}).then((res) => {
             const authToken = res.headers['x-auth'];
             const user = res.data;
-    
-            signupSuccess(dispatch, authToken, user);
+            localStorage.setItem('authToken', authToken);
+
+            dispatch({type: types.AUTHENTICATED, payload: user});
         }, (err) => {
-            signupFailed(dispatch, err.response.data);
+            dispatch({type: types.SIGNUP_FAILED, payload: err.response.data});
         });
     }
 };
