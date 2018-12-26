@@ -17,6 +17,7 @@
   "author": "Justin Kusz",
   "license": "ISC",
   "dependencies": {
+    "@braintree/sanitize-url": "^2.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
