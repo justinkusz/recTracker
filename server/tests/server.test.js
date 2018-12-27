@@ -32,7 +32,7 @@ describe('Server', () => {
                     .send(rec)
                     .expect(200)
                     .expect((res) => {
-                        expect(res.body).toMatchObject(rec);
+                        expect(res.body.rec).toMatchObject(rec);
                     }).end((err, res) => {
                         if (err) {
                             return done(err);

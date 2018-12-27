@@ -25,7 +25,7 @@ app.post('/recs', authenticate, (req, res) => {
     });
 
     newRec.save().then((rec) => {
-        res.status(200).send(rec);
+        res.status(200).send({rec});
     }, (error) => {
         res.status(400).send(error.message);
     });
