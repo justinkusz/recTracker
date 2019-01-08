@@ -39,6 +39,19 @@ app.get('/recs', authenticate, (req, res) => {
     });
 });
 
+app.get('/recs/by/:recommender', authenticate, (req, res) => {
+    const recommender = req.params.recommender;
+
+    Recommendation.findByRecommender(recommender).then((recs) => {
+        if (recs.length === 0) {
+            return res.status(404).send('Recommender not found');
+        }
+        res.status(200).send({recs});
+    }).catch((error) => {
+        res.status(400).send(error);
+    });
+});
+
 app.get('/recs/:id', authenticate,(req, res) => {
     const id = req.params.id;
 

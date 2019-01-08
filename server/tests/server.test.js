@@ -105,6 +105,32 @@ describe('Server', () => {
                     }).end(done);
             });
         });
+
+        describe('GET /recs/by/:recommender', () => {
+            it('should return a 404 if recommender is not found', (done) => {
+                request(app).get('/recs/by/somebogusrecommender')
+                    .set('x-auth', users[0].tokens[0].token)
+                    .expect(404)
+                    .end(done);
+            });
+
+            it('should return recs by recommender', (done) => {
+                request(app).get(`/recs/by/${recs[0].recommender}`)
+                    .set('x-auth', users[0].tokens[0].token)
+                    .expect(200)
+                    .expect((res) => {
+                        expect(res.body.recs).toMatchObject([recs[0]]);
+                    }).end(done);
+            });
+
+            it('should return a 401 if not authenticated', (done) => {
+                request(app).get(`/recs/by/${recs[0].recommender}`)
+                    .expect(401)
+                    .expect((res) => {
+                        expect(res.body).toEqual({});
+                    }).end(done);
+            });
+        });
     
         describe('GET /recs/:id', () => {
             it('should return a 400 when id is invalid', (done) => {

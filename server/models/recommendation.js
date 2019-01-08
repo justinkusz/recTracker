@@ -40,8 +40,13 @@ const RecommendationSchema = new mongoose.Schema({
     }
 });
 
+RecommendationSchema.statics.findByRecommender = function (recommender) {
+    var Recommendation = this;
+
+    return Recommendation.find({recommender});
+};
+
 const handleError = (err, res, next) => {
-    console.log(JSON.stringify(err.name, undefined, 2));
     if (err.name === 'ValidationError') {
         if (err.errors.url) {
             next(new Error('Invalid URL. Make sure to include the full URL e.g. "http://www.example.com"'));
