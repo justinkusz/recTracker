@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { attemptLogin, openedAuthPage } from '../../actions';
 import { Redirect } from 'react-router-dom';
+import { Button, Form, FormGroup, Input } from 'reactstrap';
 
 class Login extends Component {
   constructor(props) {
@@ -33,8 +34,8 @@ class Login extends Component {
     this.props.attemptLogin({email, password});
   }
 
-  errorMessage = (error) => {
-    if (!error) {
+  errorMessage = () => {
+    if (!this.props.error) {
       return null;
     }
     return (
@@ -47,50 +48,46 @@ class Login extends Component {
   render() {
     if (this.props.authenticated) {
       return (
-        <Redirect to="/" />
+        <Redirect to="/recs" />
       )
     }
+
     return (
-      <div className="login">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-8 m-auto">
-              <h1 className="display text-center">Login</h1>
-              <form onSubmit={this.onSubmit}>
-                <div className="form-group">
-                  <input
-                    onChange={this.onChange}
-                    type="text"
-                    className="form-control form-control-lg"
-                    placeholder="user@email.com"
-                    name="email"
-                    value={this.state.email}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    onChange={this.onChange}
-                    type="password"
-                    className="form-control form-control-lg"
-                    placeholder="password"
-                    name="password"
-                    value={this.state.password}
-                    required
-                  />
-                </div>
-                {this.errorMessage(this.props.error)}
-                <input
-                  type="submit"
-                  value="Submit"
-                  disabled={this.props.loading}
-                  className="btn btn-primary btn-block"
-                />
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Form
+        onSubmit={this.onSubmit}
+        className="text-center mx-auto"
+        style={{paddingTop: "60px", width: "80%"}}>
+
+        <h1>Login</h1>
+        <FormGroup>
+          <Input
+            className="my-2"
+            onChange={this.onChange}
+            type="email"
+            placeholder="user@email.com"
+            name="email"
+            value={this.state.email}
+            required
+          />
+          <Input
+            className="my-2"
+            onChange={this.onChange}
+            type="password"
+            placeholder="password"
+            name="password"
+            value={this.state.password}
+            required
+          />
+          {this.errorMessage()}
+          <Button
+            color="primary"
+            className="btn-block"
+            type="submit"
+            disabled={this.props.loading}>
+            Submit
+          </Button>
+        </FormGroup>
+      </Form>
     )
   }
 }

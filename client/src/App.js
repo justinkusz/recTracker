@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
 import Navbar from './components/layouts/Navbar';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Recommendations from './components/recs/Recommendations';
+import AddRec from './components/recs/AddRec';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -26,11 +26,12 @@ class App extends Component {
     return (
       <Provider store={store}>
         <Router>
-          <div className="App">
-            <Navbar />
-            <div className="container">
+          <div>
+          <Navbar />
+          <div className="App-content" style={{paddingTop: 60}}>
               <Switch>
-                <PrivateRoute exact path="/" component={Recommendations} />
+                <PrivateRoute exact path="/recs" component={Recommendations} />
+                <PrivateRoute exact path="/add-rec" component={AddRec} />
               </Switch>
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
