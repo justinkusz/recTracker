@@ -11,3 +11,22 @@ export const LOGOUT_SUCCESS = 'logout_success';
 export const LOGOUT_FAILED = 'logout_failed';
 
 export const OPENED_AUTH_PAGE = 'opened_auth_page';
+
+export const RECS_FETCHED = 'recs_fetched';
+export const RECS_FETCH_STARTED = 'recs_fetch_started';
+export const RECS_FETCH_ERROR = 'recs_fetch_error';
+
+export const REC_ADD_ATTEMPTED = 'rec_add_attempted';
+export const REC_ADD_SUCCESS = 'rec_added';
+export const REC_ADD_ERROR = 'rec_added_error';
+
+export const REC_UPDATE_ERROR = 'rec_update_error';
+export const REC_UPDATE_SUCCESS = 'rec_update_success';
+
+export const REMOVE_REC_ATTEMPTED = 'remove_rec_attempted';
+export const REMOVE_REC_SUCCESS = 'remove_rec_success';
+export const REMOVE_REC_FAILED = 'remove_rec_failed';
+
+export const DISMISS_ALERT = 'dismiss_alert';
+
+export const REC_FILTER_CHANGED = 'rec_filter_changed';
