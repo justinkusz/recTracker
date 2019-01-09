@@ -35,7 +35,7 @@ app.get('/recs', authenticate, (req, res) => {
     Recommendation.find({_owner: req.user._id}).then((recs) => {
         res.status(200).send({recs: recs});
     }, (error) => {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     });
 });
 
@@ -48,7 +48,7 @@ app.get('/recs/by/:recommender', authenticate, (req, res) => {
         }
         res.status(200).send({recs});
     }).catch((error) => {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     });
 });
 
@@ -64,7 +64,7 @@ app.get('/recs/:id', authenticate,(req, res) => {
         }
         res.status(200).send({rec: rec});
     }).catch((error) => {
-        res.status(400).send(error)
+        res.status(400).send(error.message)
     });
 });
 
@@ -81,7 +81,7 @@ app.delete('/recs/:id', authenticate, (req, res) => {
         }
         res.status(200).send({rec: rec});
     }).catch((error) => {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     });
 });
 
@@ -103,7 +103,7 @@ app.patch('/recs/:id', authenticate, (req, res) => {
         }
         res.status(200).send({rec});
     }).catch((err) => {
-        res.status(404).send(err);
+        res.status(404).send(err.message);
     });
 });
 
