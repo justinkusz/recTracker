@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     recs: [],
     filter: {
         query: '',
+        type: undefined,
         consumed: false
     },
     error: null,

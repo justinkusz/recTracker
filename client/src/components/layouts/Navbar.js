@@ -41,7 +41,8 @@ class NavBar extends React.Component {
           {this.renderAddRec()}
         </Nav>  
         <Nav navbar className="mx-auto">
-            {this.renderFilter()}  
+            {this.renderConsumedToggle()}
+            {this.renderTypeToggle()}
             {this.renderSearch()}
           </Nav>
           {this.renderAuthLinks()}
@@ -63,7 +64,7 @@ class NavBar extends React.Component {
     });
   }
 
-  renderFilter = () => {
+  renderConsumedToggle = () => {
     if (!this.props.authenticated || this.props.location.pathname !== '/') {
       return null;
     }
@@ -78,6 +79,28 @@ class NavBar extends React.Component {
           <option value="all">All</option>
           <option value="new">New</option>
           <option value="old">Old</option>
+        </Input>
+      </NavItem>
+    )
+  }
+
+  renderTypeToggle = () => {
+    if (!this.props.authenticated || this.props.location.pathname !== '/') {
+      return null;
+    }
+
+    return (
+      <NavItem className="mx-2" style={{width: "110px"}}>
+        <Input
+          onChange={this.onToggleType}
+          defaultValue="all"
+          type="select"
+          name="type">
+          <option value="all">All</option>
+          <option value="album">Albums</option>
+          <option value="book">Books</option>
+          <option value="movie">Movies</option>
+          <option value="show">TV Shows</option>
         </Input>
       </NavItem>
     )
@@ -109,6 +132,22 @@ class NavBar extends React.Component {
   onToggleNavBar = () => {
     this.setState({
       navOpen: !this.state.navOpen
+    });
+  }
+
+  onToggleType = (event) => {
+    var type = event.target.value;
+
+    type = (type === "all") ? undefined : type;
+
+    this.setState({
+      ...this.state,
+      filter: {
+        ...this.state.filter,
+        type
+      }
+    }, () => {
+      this.props.filterRecs(this.state.filter);
     });
   }
 

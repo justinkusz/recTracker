@@ -65,6 +65,12 @@ class Recommendations extends Component {
       });
     }
 
+    if (this.props.filter.type !== undefined) {
+      recs = recs.filter((rec) => {
+        return rec.type === this.props.filter.type
+      });
+    }
+
     if (recs.length === 0 && !this.props.loading) {
       return (
         <div style={{paddingTop: 60, textAlign: 'center'}}>
