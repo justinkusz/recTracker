@@ -15,11 +15,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    if(this.props.authenticated) {
-      this.props.history.push('/');
-    } else {
-      this.props.openedAuthPage();
-    }
+    this.props.openedAuthPage();
   }
 
   onChange = (event) => {
@@ -48,7 +44,7 @@ class Login extends Component {
   render() {
     if (this.props.authenticated) {
       return (
-        <Redirect to="/recs" />
+        <Redirect to="/" />
       )
     }
 

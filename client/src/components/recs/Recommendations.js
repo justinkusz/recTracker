@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Rec from './Rec';
 import { getRecs, dismissAlert, addRec, deleteRec, getRecsByRecommender } from '../../actions';
 
@@ -9,10 +9,6 @@ class Recommendations extends Component {
     super(props);
 
     this.props.getRecs();
-  }
-
-  componentDidMount() {
-    
   }
 
   renderAlert = () => {
@@ -88,7 +84,9 @@ class Recommendations extends Component {
 
   render() {
     if (!this.props.authenticated) {
-      return null;
+      return (
+        <Redirect to="/login" />
+      )
     };
 
     setTimeout(this.props.dismissAlert, 5000);

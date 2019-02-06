@@ -16,11 +16,7 @@ class Register extends Component {
   }
 
   componentDidMount() {
-    if(this.props.authenticated) {
-      this.props.history.push('/');
-    } else {
-      this.props.openedAuthPage();
-    }
+    this.props.openedAuthPage();
   }
 
   onChange = (event) => {
@@ -66,8 +62,9 @@ class Register extends Component {
 
   render() {
     if (this.props.authenticated) {
-      return <Redirect to="/recs" />
+      return <Redirect to="/" />
     }
+
     const {email, password, confirm} = this.state;
     const errors = this.validate(email, password, confirm);
     const isValid = !Object.keys(errors).some(x => errors[x]);

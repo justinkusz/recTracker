@@ -31,7 +31,7 @@ class NavBar extends React.Component {
   render() {    
     return (
       <Navbar color="dark" dark fixed="top" expand="md">
-        <NavbarBrand tag={RRNavLink} style={{outline: 'none'}} to="/recs">RecTracker</NavbarBrand>
+        <NavbarBrand tag={RRNavLink} style={{outline: 'none'}} to="/">RecTracker</NavbarBrand>
         <NavbarToggler onClick={this.onToggleNavBar} />
         <Collapse isOpen={this.state.navOpen} navbar>
         <Nav navbar className="mr-auto ml-2">
@@ -61,7 +61,7 @@ class NavBar extends React.Component {
   }
 
   renderFilter = () => {
-    if (!this.props.authenticated || this.props.location.pathname !== '/recs') {
+    if (!this.props.authenticated || this.props.location.pathname !== '/') {
       return null;
     }
 
@@ -140,7 +140,7 @@ class NavBar extends React.Component {
     if (this.props.location.pathname === '/add-rec') {
       return (
         <NavItem>
-          <NavLink tag={RRNavLink} style={{outline: 'none'}} to="/recs">Cancel</NavLink>
+          <NavLink tag={RRNavLink} style={{outline: 'none'}} to="/">Cancel</NavLink>
         </NavItem>
       )
     }

@@ -30,7 +30,7 @@ class App extends Component {
           <Navbar />
           <div className="App-content" style={{paddingTop: 60}}>
               <Switch>
-                <PrivateRoute exact path="/recs" component={Recommendations} />
+                <PrivateRoute exact path="/" component={Recommendations} />
                 <PrivateRoute exact path="/add-rec" component={AddRec} />
               </Switch>
               <Route exact path="/register" component={Register} />

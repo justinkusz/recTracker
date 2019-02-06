@@ -26,7 +26,7 @@ class AddRec extends Component {
 
     this.props.addRec(rec).then(() => {
       if (!this.props.error) {
-        this.props.history.push("/recs");
+        this.props.history.push("/");
       }
     });
   };
