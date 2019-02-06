@@ -163,10 +163,10 @@ class NavBar extends React.Component {
     } else {
       return (
         <Nav navbar className="ml-auto">
-          <NavItem>
+          <NavItem onClick={this.onToggleNavBar}>
             <NavLink style={{outline: 'none'}} tag={RRNavLink} to="/register">Register</NavLink>
           </NavItem>
-          <NavItem>
+          <NavItem onClick={this.onToggleNavBar}>
             <NavLink style={{outline: 'none'}} tag={RRNavLink} to="/login">Login</NavLink>
           </NavItem>
         </Nav>
