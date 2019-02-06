@@ -57,7 +57,7 @@ class AddRec extends Component {
       <Form
         onSubmit={this.onSubmit}
         className="mx-auto"
-        style={{paddingTop: "60px", width: "80%"}}>
+        style={{paddingTop: "60px", width: "50%"}}>
         <FormGroup>
           <Input type="select" name="type" onChange={this.onChange}>
             {this.state.types.map(type => <option key={type} value={type}>{type}</option>)}

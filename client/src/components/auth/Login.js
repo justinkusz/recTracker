@@ -56,7 +56,7 @@ class Login extends Component {
       <Form
         onSubmit={this.onSubmit}
         className="text-center mx-auto"
-        style={{paddingTop: "60px", width: "80%"}}>
+        style={{paddingTop: "60px", width: "50%"}}>
 
         <h1>Login</h1>
         <FormGroup>
