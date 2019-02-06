@@ -3,12 +3,15 @@ import { NavLink as RRNavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { attemptLogout, filterRecs } from '../../actions';
 import {
+  Button,
   Navbar,
   NavbarBrand,
   Nav,
   NavItem,
   NavLink,
   Input,
+  InputGroup,
+  InputGroupAddon,
   NavbarToggler,
   Collapse
 } from 'reactstrap';
@@ -81,19 +84,24 @@ class NavBar extends React.Component {
   }
 
   renderSearch = () => {
-    if (!this.props.authenticated || this.props.location.pathname !== '/recs') {
+    if (!this.props.authenticated || this.props.location.pathname !== '/') {
       return null;
     }
 
     return (
-      <NavItem className="mx-2" style={{width: "250px"}}>
-        <Input
-          type="text"
-          name="query"
-          placeholder="Search by title/recommender"
-          value={this.props.filter.query}
-          onChange={this.onChange}
-        />
+      <NavItem className="mx-2" style={{width: "300px"}}>
+        <InputGroup>
+          <Input
+            type="text"
+            name="query"
+            placeholder="Search by title/recommender"
+            value={this.state.filter.query}
+            onChange={this.onChange}
+          />
+          <InputGroupAddon addonType="append">
+            <Button onClick={this.onClearSearch}>clear</Button>
+          </InputGroupAddon>
+        </InputGroup>
       </NavItem>
     )
   };
@@ -114,6 +122,18 @@ class NavBar extends React.Component {
       filter: {
         ...this.state.filter,
         consumed 
+      }
+    }, () => {
+      this.props.filterRecs(this.state.filter);
+    });
+  }
+
+  onClearSearch = () => {
+    this.setState({
+      ...this.state,
+      filter: {
+        ...this.state.filter,
+        query: ''
       }
     }, () => {
       this.props.filterRecs(this.state.filter);
