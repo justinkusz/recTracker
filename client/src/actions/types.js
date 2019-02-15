@@ -30,3 +30,11 @@ export const REMOVE_REC_FAILED = 'remove_rec_failed';
 export const DISMISS_ALERT = 'dismiss_alert';
 
 export const REC_FILTER_CHANGED = 'rec_filter_changed';
+
+export const CLEAR_QUERY = 'movie_query_clear';
+
+export const MOVIE_QUERY_RESULTS = 'movie_query_results';
+export const MOVIE_QUERY_ERROR = 'movie_query_error';
+
+export const ALBUM_QUERY_RESULTS = 'album_query_results';
+export const ALBUM_QUERY_ERROR = 'album_query_error';
