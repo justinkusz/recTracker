@@ -14,13 +14,14 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 app.post('/recs', authenticate, (req, res) => {
-    const { type, title, url, recommender } = req.body;
+    const { type, title, url, recommender, image } = req.body;
 
     const newRec = new Recommendation({
         type: type,
         title: title,
         url: url,
         recommender: recommender,
+        image: image,
         _owner: req.user._id
     });
 

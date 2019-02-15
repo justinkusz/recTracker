@@ -25,6 +25,13 @@ const RecommendationSchema = new mongoose.Schema({
             validator: validateUrl
         }
     },
+    image: {
+        type: String,
+        trime: true,
+        validate: {
+            validator: validateUrl
+        }
+    },
     recommender: {
         type: String,
         trim: true,

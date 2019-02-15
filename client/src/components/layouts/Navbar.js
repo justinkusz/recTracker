@@ -118,7 +118,7 @@ class NavBar extends React.Component {
             type="text"
             name="query"
             placeholder="Search by title/recommender"
-            value={this.state.filter.query}
+            value={this.state.filter.query || this.props.filter.query}
             onChange={this.onChange}
           />
           <InputGroupAddon addonType="append">

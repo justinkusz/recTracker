@@ -63,7 +63,7 @@ class Rec extends Component {
   }
 
   render() {
-    const {title, recommender, url, type, consumed} = this.props.rec;
+    const {title, recommender, url, type, consumed, image} = this.props.rec;
     const logoTypes = {
       'album': albumLogo,
       'book': bookLogo,
@@ -74,15 +74,15 @@ class Rec extends Component {
     const logo = logoTypes[type];
 
     return (
-      <Media className="my-2">
+      <Media className="my-2 py-2 border border-primary">
         <Media left>
-          <Media object src={logo} />
+          <Media object src={(image) ? image : logo} />
         </Media>
         <Media body className="ml-2">
           <Media heading>
             <a rel="noopener noreferrer" target="_blank" href={url}>{title}</a>
           </Media>
-          Recommended by<Button color="link" onClick={this.onClickRecommender}>{recommender}</Button>
+          Recommended by <Button size="sm" outline onClick={this.onClickRecommender}>{recommender}</Button>
           <Media left>
           <ButtonGroup className="mt-2">
             {this.renderConsumedButton(consumed, type)}
