@@ -7,12 +7,15 @@ const { mongoose } = require("./db/mongoose");
 const { Recommendation } = require("./models/recommendation");
 const { User } = require("./models/user");
 const { authenticate } = require("./middleware/authenticate");
+const path = require("path");
 
 const app = express();
 // const port = process.env.PORT;
 const port = process.env.SERVER_PORT || 4000;
 
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.post("/recs", authenticate, (req, res) => {
   const { type, title, url, recommender, image } = req.body;
@@ -177,6 +180,10 @@ app.post("/users", (req, res) => {
     .catch(err => {
       res.status(400).send(err.message);
     });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
 if (process.env.NODE_ENV !== "test") {
