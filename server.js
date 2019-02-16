@@ -10,8 +10,7 @@ const { authenticate } = require("./middleware/authenticate");
 const path = require("path");
 
 const app = express();
-// const port = process.env.PORT;
-const port = process.env.SERVER_PORT || 4000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
