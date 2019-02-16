@@ -10,7 +10,7 @@
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha --exit **/tests/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
     "client-install": "npm install --prefix client",
-    "client": "npm run build --prefix client",
+    "client": "npm start --prefix client",
     "client-dev": "export PORT=3001 && npm run client",
     "heroku-postbuild": "npm run client-install"
   },
