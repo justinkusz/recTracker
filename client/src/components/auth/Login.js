@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux';
-import { attemptLogin, openedAuthPage } from '../../actions';
-import { Redirect } from 'react-router-dom';
-import { Button, Form, FormGroup, Input } from 'reactstrap';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { attemptLogin, openedAuthPage } from "../../actions";
+import { Redirect } from "react-router-dom";
+import { Button, Form, FormGroup, Input } from "reactstrap";
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      email: '',
-      password: ''
+      email: "",
+      password: ""
     };
   }
 
@@ -18,42 +18,36 @@ class Login extends Component {
     this.props.openedAuthPage();
   }
 
-  onChange = (event) => {
-    this.setState({[event.target.name]: event.target.value});
-  }
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
-  onSubmit = (event) => {
+  onSubmit = event => {
     event.preventDefault();
 
     const { email, password } = this.state;
 
-    this.props.attemptLogin({email, password});
-  }
+    this.props.attemptLogin({ email, password });
+  };
 
   errorMessage = () => {
     if (!this.props.error) {
       return null;
     }
-    return (
-      <div className="alert alert-danger">
-        {this.props.error}
-      </div>
-    )
+    return <div className="alert alert-danger">{this.props.error}</div>;
   };
 
   render() {
     if (this.props.authenticated) {
-      return (
-        <Redirect to="/" />
-      )
+      return <Redirect to="/" />;
     }
 
     return (
       <Form
         onSubmit={this.onSubmit}
         className="text-center mx-auto"
-        style={{paddingTop: "60px", width: "50%"}}>
-
+        style={{ paddingTop: "60px", width: "50%" }}
+      >
         <h1>Login</h1>
         <FormGroup>
           <Input
@@ -79,19 +73,23 @@ class Login extends Component {
             color="primary"
             className="btn-block"
             type="submit"
-            disabled={this.props.loading}>
+            disabled={this.props.loading}
+          >
             Submit
           </Button>
         </FormGroup>
       </Form>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const { error, loading, authenticated } = state.auth;
 
   return { error, loading, authenticated };
 };
 
-export default connect(mapStateToProps, { attemptLogin, openedAuthPage })(Login);
+export default connect(
+  mapStateToProps,
+  { attemptLogin, openedAuthPage }
+)(Login);

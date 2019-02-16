@@ -50,14 +50,14 @@ class AddRec extends Component {
     this.setState(
       {
         title: event.target.value,
-        showResults: (event.target.value !== "")
+        showResults: event.target.value !== ""
       },
       () => {
         switch (this.state.type) {
-          case 'album':
+          case "album":
             this.props.albumQuery(this.state.title);
             break;
-          case 'movie':
+          case "movie":
             this.props.movieQuery(this.state.title);
             break;
           default:
@@ -70,8 +70,8 @@ class AddRec extends Component {
   onChangeType = event => {
     this.setState({
       ...this.state,
-      title: '',
-      url: '',
+      title: "",
+      url: "",
       type: event.target.value
     });
   };
@@ -102,7 +102,6 @@ class AddRec extends Component {
     }
 
     return (
-      // <div className="col-sm">
       <ListGroup>
         {this.props.queryResults.slice(0, 9).map(item => (
           <ListGroupItem
@@ -115,20 +114,25 @@ class AddRec extends Component {
           </ListGroupItem>
         ))}
       </ListGroup>
-      // </div>
     );
   };
 
   onSelectItem = item => {
     const { type } = this.state;
 
-    const url = (type === "movie") ? `https://www.themoviedb.org/movie/${item.id}`
-      : (type === "album") ? `https://www.discogs.com${item.uri}`
-      : null;
+    const url =
+      type === "movie"
+        ? `https://www.themoviedb.org/movie/${item.id}`
+        : type === "album"
+        ? `https://www.discogs.com${item.uri}`
+        : null;
 
-    const image = (type === "movie") ? `https://image.tmdb.org/t/p/w154/${item.poster_path}`
-      : (type === "album") ? item.thumb
-      : null;
+    const image =
+      type === "movie"
+        ? `https://image.tmdb.org/t/p/w154/${item.poster_path}`
+        : type === "album"
+        ? item.thumb
+        : null;
 
     this.setState({
       ...this.state,
