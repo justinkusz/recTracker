@@ -15,7 +15,9 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, "client", "build")));
+if (process.env.NODE_ENV === "production" ) {
+  app.use(express.static(path.join(__dirname, "client", "build")));
+}
 
 app.post("/recs", authenticate, (req, res) => {
   const { type, title, url, recommender, image } = req.body;
@@ -197,9 +199,11 @@ app.get("/movie/:title", (req, res) => {
   });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
+if (process.env.NODE_ENV === "production" ) {
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  });
+}
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
