@@ -15,7 +15,8 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-if (process.env.NODE_ENV === "production" ) {
+
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client", "build")));
 }
 
@@ -185,21 +186,37 @@ app.post("/users", (req, res) => {
 });
 
 app.get("/movie/:title", (req, res) => {
-  const key = process.env.TMDB_KEY || require("./client/src/actions/apiKeys.json").tmdb.key;
-  const {title} = req.params;
-  console.log(title);
+  const { title } = req.params;
+  const key = process.env.TMDB_KEY;
   const api = "https://api.themoviedb.org/3/search/movie?";
   const url = `${api}api_key=${key}&query=${title}`;
 
-  axios.get(url).then((response) => {
+  axios
+    .get(url)
+    .then(response => {
+      res.status(200).send(response.data);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(400).send(err.message);
+    });
+});
+
+app.get("/album/:title", (req, res) => {
+  const { title } = req.params;
+  const key = process.env.DISCOGS_KEY;
+  const secret = process.env.DISCOGS_SECRET;
+  const api = "https://api.discogs.com/database/search?";
+  const url = `${api}q=${title}&key=${key}&secret=${secret}`;
+  axios.get(url).then(response => {
     res.status(200).send(response.data);
-  }).catch((err) => {
+  }).catch(err => {
     console.log(err);
     res.status(400).send(err.message);
   });
 });
 
-if (process.env.NODE_ENV === "production" ) {
+if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });

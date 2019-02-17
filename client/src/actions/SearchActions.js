@@ -22,13 +22,7 @@ export const movieQuery = title => {
 
 export const albumQuery = title => {
   return dispatch => {
-    const key = process.env.DISCOGS_KEY;
-    const secret = process.env.DISCOGS_SECRET;
-    const api = "https://api.discogs.com/database/search?";
-
-    const url = `${api}q=${title}&key=${key}&secret=${secret}`;
-
-    return axios.get(url).then(
+    return axios.get(`/album/${title}`).then(
       res => {
         dispatch({
           type: types.ALBUM_QUERY_RESULTS,

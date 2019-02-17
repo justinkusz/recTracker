@@ -1,4 +1,3 @@
 node_modules/
 package-lock.json
-server/config/config.json
-client/src/actions/apiKeys.json
+config/config.json
