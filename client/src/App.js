@@ -37,10 +37,10 @@ class App extends Component {
               <Switch>
                 <PrivateRoute exact path="/" component={Recommendations} />
                 <PrivateRoute exact path="/add-rec" component={AddRec} />
+                <Route exact path="/register" component={Register} />
+                <Route exact path="/login" component={Login} />
+                <Redirect to="/" />
               </Switch>
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
-              <Redirect to="/" />
             </div>
           </div>
         </Router>
