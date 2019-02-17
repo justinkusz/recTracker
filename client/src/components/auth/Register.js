@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { attemptSignup, openedAuthPage } from "../../actions";
+import { attemptSignup } from "../../actions";
 import { Button, Form, FormGroup, Input } from "reactstrap";
 
 class Register extends Component {
@@ -11,12 +11,18 @@ class Register extends Component {
     this.state = {
       email: "",
       password: "",
-      confirm: ""
+      confirm: "",
+      submitted: false
     };
   }
 
   componentDidMount() {
-    this.props.openedAuthPage();
+    this.setState({
+      email: "",
+      password: "",
+      confirm: "",
+      submitted: false
+    });
   }
 
   onChange = event => {
@@ -27,6 +33,10 @@ class Register extends Component {
     event.preventDefault();
 
     const { email, password } = this.state;
+
+    this.setState({
+      submitted: true
+    });
 
     this.props.attemptSignup({ email, password });
   };
@@ -40,7 +50,7 @@ class Register extends Component {
   };
 
   errorMessage = error => {
-    if (!error) {
+    if (!error || !this.state.submitted) {
       return null;
     }
     return <div className="alert alert-danger">{this.props.error}</div>;
@@ -117,12 +127,12 @@ class Register extends Component {
 }
 
 const mapStateToProps = state => {
-  const { error, loading, authenticated } = state.auth;
+  const { registerError, loading, authenticated } = state.auth;
 
-  return { error, loading, authenticated };
+  return { error: registerError, loading, authenticated };
 };
 
 export default connect(
   mapStateToProps,
-  { attemptSignup, openedAuthPage }
+  { attemptSignup }
 )(Register);

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { attemptLogin, openedAuthPage } from "../../actions";
+import { attemptLogin } from "../../actions";
 import { Redirect } from "react-router-dom";
 import { Button, Form, FormGroup, Input } from "reactstrap";
 
@@ -10,12 +10,17 @@ class Login extends Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      submitted: false
     };
   }
 
   componentDidMount() {
-    this.props.openedAuthPage();
+    this.setState({
+      email: "",
+      password: "",
+      submitted: false
+    });
   }
 
   onChange = event => {
@@ -27,11 +32,15 @@ class Login extends Component {
 
     const { email, password } = this.state;
 
+    this.setState({
+      submitted: true
+    });
+
     this.props.attemptLogin({ email, password });
   };
 
   errorMessage = () => {
-    if (!this.props.error) {
+    if (!this.props.error || !this.state.submitted) {
       return null;
     }
     return <div className="alert alert-danger">{this.props.error}</div>;
@@ -84,12 +93,12 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-  const { error, loading, authenticated } = state.auth;
+  const { loginError, loading, authenticated } = state.auth;
 
-  return { error, loading, authenticated };
+  return { error: loginError, loading, authenticated };
 };
 
 export default connect(
   mapStateToProps,
-  { attemptLogin, openedAuthPage }
+  { attemptLogin }
 )(Login);

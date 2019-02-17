@@ -1,10 +1,6 @@
 import * as types from "./types";
 import axios from "axios";
 
-export const openedAuthPage = () => {
-  return { type: types.OPENED_AUTH_PAGE };
-};
-
 export const attemptLogin = ({ email, password }) => {
   return dispatch => {
     dispatch({ type: types.LOGIN_ATTEMPTED });
