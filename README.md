@@ -4,6 +4,8 @@ A single-page web app for keeping track of books, movies, TV shows and music rec
 
 Written entirely in Javascript, built on a MERN stack ([MongoDB](https://www.mongodb.com/), [Express](https://expressjs.com/), [React](https://reactjs.org/), [Node](https://nodejs.org/en/)).
 
+Work in progress demo: [Heroku](https://serene-ocean-96040.herokuapp.com/)
+
 ## About
 
 RecTracker started primarily as a way for me to learn and practice building a full-stack web application in Javascript. Aside from that, I often find myself really enjoying a movie, and wondering:
