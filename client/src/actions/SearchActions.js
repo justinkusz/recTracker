@@ -3,12 +3,7 @@ import axios from "axios";
 
 export const movieQuery = title => {
   return dispatch => {
-    const key = process.env.TMDB_KEY;
-
-    const api = "https://api.themoviedb.org/3/search/movie?";
-    const url = `${api}api_key=${key}&query=${title}`;
-
-    return axios.get(url).then(
+    return axios.get(`/movie/${title}`).then(
       res => {
         dispatch({
           type: types.MOVIE_QUERY_RESULTS,

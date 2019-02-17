@@ -10,9 +10,12 @@ import {
   ListGroup,
   ListGroupItem,
   InputGroup,
-  InputGroupAddon
+  InputGroupAddon,
+  Media
 } from "reactstrap";
+
 import { addRec, albumQuery, movieQuery, clearSearch } from "../../actions";
+import MovieItem from "../common/MovieItem";
 
 class AddRec extends Component {
   constructor(props) {
@@ -69,7 +72,6 @@ class AddRec extends Component {
 
   onChangeType = event => {
     this.setState({
-      ...this.state,
       title: "",
       url: "",
       type: event.target.value
@@ -79,8 +81,8 @@ class AddRec extends Component {
   onClearSearch = () => {
     this.setState(
       {
-        ...this.state,
         title: "",
+        url: "",
         showResults: false
       },
       () => {
@@ -96,6 +98,8 @@ class AddRec extends Component {
     return <div className="alert alert-danger mt-2">{this.props.error}</div>;
   };
 
+  
+
   renderSearchResults = () => {
     if (this.props.queryResults === undefined || !this.state.showResults) {
       return null;
@@ -105,12 +109,15 @@ class AddRec extends Component {
       <ListGroup>
         {this.props.queryResults.slice(0, 9).map(item => (
           <ListGroupItem
-            key={item.id}
             tag="button"
+            key={item.id}
             action
             onClick={() => this.onSelectItem(item)}
           >
-            {item.title}
+            {
+              this.state.type === "movie" ? <MovieItem item={item} />
+              : item.title
+            }
           </ListGroupItem>
         ))}
       </ListGroup>

@@ -1,5 +1,6 @@
 require("./config/config");
 
+const axios = require("axios");
 const express = require("express");
 const bodyParser = require("body-parser");
 const { mongoose } = require("./db/mongoose");
@@ -179,6 +180,21 @@ app.post("/users", (req, res) => {
     .catch(err => {
       res.status(400).send(err.message);
     });
+});
+
+app.get("/movie/:title", (req, res) => {
+  const key = process.env.TMDB_KEY || require("./client/src/actions/apiKeys.json").tmdb.key;
+  const {title} = req.params;
+  console.log(title);
+  const api = "https://api.themoviedb.org/3/search/movie?";
+  const url = `${api}api_key=${key}&query=${title}`;
+
+  axios.get(url).then((response) => {
+    res.status(200).send(response.data);
+  }).catch((err) => {
+    console.log(err);
+    res.status(400).send(err.message);
+  });
 });
 
 app.get("*", (req, res) => {
