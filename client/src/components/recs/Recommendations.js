@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
+import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
+
 import Rec from "./Rec";
+import FilterBar from "./FilterBar";
+
 import {
   getRecs,
   dismissAlert,
@@ -88,13 +92,17 @@ class Recommendations extends Component {
     }
 
     return (
-      <div className="d-flex flex-row">
-        <div className="d-flex flex-column flex-fill">
-          {recs.map(rec => (
-            <Rec key={rec._id} rec={rec} />
-          ))}
-        </div>
-      </div>
+      <Row>
+        <Col>
+          <ListGroup>
+            {recs.map(rec => (
+              <ListGroupItem action>
+                <Rec rec={rec} />
+              </ListGroupItem>
+            ))}
+          </ListGroup>
+        </Col>
+      </Row>
     );
   };
 
@@ -105,11 +113,23 @@ class Recommendations extends Component {
 
     setTimeout(this.props.dismissAlert, 5000);
     return (
-      <div className="d-flex flex-column flex-fill">
+      <Container>
+        <FilterBar />
         {this.renderRecs()}
         {this.renderAlert()}
-      </div>
+      </Container>
     );
+    // return (
+    //   <div className="d-flex flex-column flex-fill">
+    //     <div className="d-flex flex-row">
+    //       <div className="d-flex flex-column flex-fill">
+    //         <FilterBar />
+    //       </div>
+    //     </div>
+    //     {this.renderRecs()}
+    //     {this.renderAlert()}
+    //   </div>
+    // );
   }
 }
 

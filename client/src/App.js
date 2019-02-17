@@ -33,7 +33,7 @@ class App extends Component {
         <Router>
           <div>
             <Navbar />
-            <div className="App-content" style={{ paddingTop: 60 }}>
+            <div className="App-content">
               <Switch>
                 <PrivateRoute exact path="/" component={Recommendations} />
                 <PrivateRoute exact path="/add-rec" component={AddRec} />

@@ -10,8 +10,7 @@ import {
   ListGroup,
   ListGroupItem,
   InputGroup,
-  InputGroupAddon,
-  Media
+  InputGroupAddon
 } from "reactstrap";
 
 import { addRec, albumQuery, movieQuery, clearSearch } from "../../actions";
@@ -98,8 +97,6 @@ class AddRec extends Component {
     return <div className="alert alert-danger mt-2">{this.props.error}</div>;
   };
 
-  
-
   renderSearchResults = () => {
     if (this.props.queryResults === undefined || !this.state.showResults) {
       return null;
@@ -114,10 +111,11 @@ class AddRec extends Component {
             action
             onClick={() => this.onSelectItem(item)}
           >
-            {
-              this.state.type === "movie" ? <MovieItem item={item} />
-              : item.title
-            }
+            {this.state.type === "movie" ? (
+              <MovieItem item={item} />
+            ) : (
+              item.title
+            )}
           </ListGroupItem>
         ))}
       </ListGroup>
@@ -158,11 +156,11 @@ class AddRec extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm">
+          <div className="col">
             <Form
               onSubmit={this.onSubmit}
               className="mx-auto"
-              style={{ paddingTop: "60px", width: "50%" }}
+              style={{ paddingTop: "60px", width: "auto" }}
             >
               <FormGroup>
                 <ButtonGroup size="lg" className="my-2">

@@ -4,7 +4,14 @@ import bookLogo from "../../assets/img/icons/book-open.png";
 import albumLogo from "../../assets/img/icons/disc.png";
 import movieLogo from "../../assets/img/icons/film.png";
 import showLogo from "../../assets/img/icons/tv.png";
-import { Button, Media, ButtonGroup } from "reactstrap";
+import {
+  Button,
+  Media,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from "reactstrap";
 
 import {
   updateRec,
@@ -19,11 +26,14 @@ class Rec extends Component {
     super(props);
 
     this.state = {
-      consumed: this.props.rec.consumed
+      consumed: this.props.rec.consumed,
+      showModal: false
     };
   }
 
-  renderConsumedButton = (consumed, type) => {
+  renderConsumedButton = () => {
+    const { consumed, type } = this.props.rec;
+
     const types = {
       album: "Listened",
       book: "Read",
@@ -32,13 +42,7 @@ class Rec extends Component {
     };
 
     return (
-      <Button
-        size="sm"
-        outline
-        onClick={this.toggleConsumed}
-        color="primary"
-        type="button"
-      >
+      <Button onClick={this.toggleConsumed} color="primary" type="button">
         Mark as {consumed ? "New" : types[type]}
       </Button>
     );
@@ -46,7 +50,8 @@ class Rec extends Component {
 
   toggleConsumed = () => {
     this.setState({
-      consumed: !this.state.consumed
+      consumed: !this.state.consumed,
+      showModal: false
     });
 
     this.props.updateRec({
@@ -56,6 +61,9 @@ class Rec extends Component {
   };
 
   onRemove = () => {
+    this.setState({
+      showModal: false
+    });
     this.props.deleteRec(this.props.rec);
   };
 
@@ -75,39 +83,54 @@ class Rec extends Component {
     const logo = logoTypes[type];
 
     return (
-      <Media className="my-2 py-2 border border-primary">
-        <Media left>
-          <Media object src={image ? image : logo} />
-        </Media>
-        <Media body className="ml-2">
-          <Media heading>
-            <a rel="noopener noreferrer" target="_blank" href={url}>
-              {title}
-            </a>
-          </Media>
-          Recommended by{" "}
-          <Button size="sm" outline onClick={this.onClickRecommender}>
-            {recommender}
-          </Button>
+      <div onClick={this.toggleModal}>
+        {this.renderModal()}
+        <Media>
           <Media left>
-            <ButtonGroup className="mt-2">
-              {this.renderConsumedButton(consumed, type)}
-              <Button
-                size="sm"
-                outline
-                color="danger"
-                disabled={this.props.updatingRec === this.props.rec._id}
-                onClick={this.onRemove}
-                type="button"
-              >
-                Remove
-              </Button>
-            </ButtonGroup>
+            <Media object src={image ? image : logo} />
+          </Media>
+          <Media body className="ml-2">
+            <Media heading>{title}</Media>
+            Recommended by {recommender}
           </Media>
         </Media>
-      </Media>
+      </div>
     );
   }
+
+  toggleModal = () => {
+    this.setState({
+      showModal: !this.state.showModal
+    });
+  };
+
+  renderModal = () => {
+    return (
+      <Modal isOpen={this.state.showModal} toggle={this.toggleModal}>
+        <ModalHeader toggle={this.toggleModal}>
+          {this.props.rec.title}
+        </ModalHeader>
+        <ModalBody>
+          <p>Recommended by {this.props.rec.recommender}</p>
+          <p>
+            <a
+              href={this.props.rec.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              See more details
+            </a>
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          {this.renderConsumedButton()}
+          <Button color="danger" onClick={this.onRemove}>
+            Remove
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+  };
 }
 
 const mapStateToProps = state => {
