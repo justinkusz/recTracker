@@ -1,7 +1,0 @@
-{
-  "development": {
-    "PORT": "4000",
-    "MONGODB_URI": "mongodb://localhost:27017/recTracker",
-    "JWT_SECRET": "ddjuwoiclwirpqjdurmsngisofjkedrui"
-  }
-}
