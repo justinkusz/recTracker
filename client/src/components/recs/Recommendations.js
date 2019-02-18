@@ -96,7 +96,7 @@ class Recommendations extends Component {
         <Col>
           <ListGroup>
             {recs.map(rec => (
-              <ListGroupItem action>
+              <ListGroupItem key={rec.title} action>
                 <Rec rec={rec} />
               </ListGroupItem>
             ))}
@@ -119,17 +119,6 @@ class Recommendations extends Component {
         {this.renderAlert()}
       </Container>
     );
-    // return (
-    //   <div className="d-flex flex-column flex-fill">
-    //     <div className="d-flex flex-row">
-    //       <div className="d-flex flex-column flex-fill">
-    //         <FilterBar />
-    //       </div>
-    //     </div>
-    //     {this.renderRecs()}
-    //     {this.renderAlert()}
-    //   </div>
-    // );
   }
 }
 
