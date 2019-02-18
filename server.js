@@ -185,6 +185,19 @@ app.post("/users", (req, res) => {
     });
 });
 
+app.get("/tv/:title", (req, res) => {
+  const { title } = req.params;
+  const key = process.env.TMDB_KEY;
+  const api = "https://api.themoviedb.org/3/search/tv?";
+  const url = `${api}api_key=${key}&query=${title}`;
+
+  axios.get(url).then(response => {
+    res.status(200).send(response.data);
+  }).catch(err => {
+    res.status(400).send(err.message);
+  });
+});
+
 app.get("/movie/:title", (req, res) => {
   const { title } = req.params;
   const key = process.env.TMDB_KEY;
