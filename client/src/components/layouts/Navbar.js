@@ -3,13 +3,11 @@ import { NavLink as RRNavLink, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { attemptLogout } from "../../actions";
 import {
-  Button,
   Navbar,
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
-  Collapse
+  NavLink
 } from "reactstrap";
 
 class NavBar extends React.Component {
