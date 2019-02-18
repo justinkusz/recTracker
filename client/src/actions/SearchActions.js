@@ -20,6 +20,25 @@ export const movieQuery = title => {
   };
 };
 
+export const tvQuery = title => {
+  return dispatch => {
+    return axios.get(`/tv/${title}`).then(
+      res => {
+        dispatch({
+          type: types.TV_QUERY_RESULTS,
+          payload: res.data.results
+        });
+      },
+      err => {
+        dispatch({
+          type: types.TV_QUERY_ERROR,
+          payload: err.response.data
+        });
+      }
+    );
+  };
+};
+
 export const albumQuery = title => {
   return dispatch => {
     return axios.get(`/album/${title}`).then(

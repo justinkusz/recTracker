@@ -17,6 +17,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         error: action.payload
       };
+    case types.TV_QUERY_RESULTS:
+      return {
+        ...state,
+        results: action.payload
+      };
+    case types.TV_QUERY_ERROR:
+      return {
+        ...state,
+        error: action.payload
+      }
     case types.ALBUM_QUERY_RESULTS:
       return {
         ...state,

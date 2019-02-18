@@ -36,5 +36,8 @@ export const CLEAR_QUERY = 'movie_query_clear';
 export const MOVIE_QUERY_RESULTS = 'movie_query_results';
 export const MOVIE_QUERY_ERROR = 'movie_query_error';
 
+export const TV_QUERY_RESULTS = 'tv_query_results';
+export const TV_QUERY_ERROR = 'tv_query_error';
+
 export const ALBUM_QUERY_RESULTS = 'album_query_results';
 export const ALBUM_QUERY_ERROR = 'album_query_error';
