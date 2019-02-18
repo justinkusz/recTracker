@@ -13,7 +13,13 @@ import {
   InputGroupAddon
 } from "reactstrap";
 
-import { addRec, albumQuery, movieQuery, clearSearch } from "../../actions";
+import {
+  addRec,
+  albumQuery,
+  movieQuery,
+  tvQuery,
+  clearSearch
+} from "../../actions";
 import MovieItem from "../common/MovieItem";
 
 class AddRec extends Component {
@@ -61,6 +67,9 @@ class AddRec extends Component {
             break;
           case "movie":
             this.props.movieQuery(this.state.title);
+            break;
+          case "show":
+            this.props.tvQuery(this.state.title);
             break;
           default:
             this.props.albumQuery(this.state.title);
@@ -114,7 +123,7 @@ class AddRec extends Component {
             {this.state.type === "movie" ? (
               <MovieItem item={item} />
             ) : (
-              item.title
+              item.title || item.name
             )}
           </ListGroupItem>
         ))}
@@ -128,6 +137,8 @@ class AddRec extends Component {
     const url =
       type === "movie"
         ? `https://www.themoviedb.org/movie/${item.id}`
+        : type === "show"
+        ? `https://www.themoviedb.org/tv/${item.id}`
         : type === "album"
         ? `https://www.discogs.com${item.uri}`
         : null;
@@ -135,13 +146,15 @@ class AddRec extends Component {
     const image =
       type === "movie"
         ? `https://image.tmdb.org/t/p/w154/${item.poster_path}`
+        : type === "show"
+        ? `https://image.tmdb.org/t/p/w154/${item.poster_path}`
         : type === "album"
         ? item.thumb
         : null;
 
     this.setState({
       ...this.state,
-      title: item.title,
+      title: item.title || item.name,
       image,
       url,
       showResults: false
@@ -239,5 +252,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { addRec, albumQuery, movieQuery, clearSearch }
+  { addRec, albumQuery, movieQuery, tvQuery, clearSearch }
 )(AddRec);
