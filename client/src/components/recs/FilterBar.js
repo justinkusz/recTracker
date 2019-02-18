@@ -140,7 +140,6 @@ class FilterBar extends React.Component {
     return (
       <InputGroup>
         <Input
-          returnKeyType="done"
           type="text"
           name="query"
           placeholder="Search by title/recommender"
