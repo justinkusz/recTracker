@@ -72,7 +72,7 @@ class AddRec extends Component {
             this.props.tvQuery(this.state.title);
             break;
           default:
-            this.props.albumQuery(this.state.title);
+            break;
         }
       }
     );
